@@ -1,0 +1,5 @@
+controllers:
+    resource:
+        path: ../src/Infrastructure/Controller/
+        namespace: Kamalo\KanbanTaskManagementSystem\Infrastructure\Controller
+    type: attribute

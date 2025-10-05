@@ -1,0 +1,28 @@
+framework:
+    workflows: {}
+    # workflows:
+    #     task:
+    #         type: "state_machine"
+    #         audit_trail:
+    #             enabled: true
+    #         supports:
+    #             - Kamalo\KanbanTaskManagementSystem\Domain\Entity\Task
+    #         initial_marking: open
+    #         marking_store:
+    #             type: method
+    #             property: status
+    #         places:
+    #             - open
+    #             - inProgress
+    #             - done
+    #             - canceled
+    #         transitions:
+    #             start:
+    #                 from: open
+    #                 to: inProgress
+    #             complete:
+    #                 from: inProgress
+    #                 to: done
+    #             cancel:
+    #                 from: [open, inProgress]
+    #                 to: canceled
