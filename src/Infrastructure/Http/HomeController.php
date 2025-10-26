@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kamalo\KanbanTaskManagementSystem\Infrastructure\Controller;
+namespace Kamalo\KanbanTaskManagementSystem\Infrastructure\Http;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;

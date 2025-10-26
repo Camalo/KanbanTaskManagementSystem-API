@@ -17,6 +17,41 @@ services:
         resource: '../src/'
         exclude:
             - "../src/Kernel.php"
+    Kamalo\KanbanTaskManagementSystem\Application\UseCase\:
+        resource: "../src/Application/UseCase/*/*"
+        exclude: "../src/Application/UseCase/*/*/*{Request,Response,Entry}.php"
+        autowire: true
+        autoconfigure: true
+        public: true
+    Kamalo\KanbanTaskManagementSystem\Application\Service\:
+        resource: "../src/Application/Service/"
+        exclude: "../src/Application/Service/*/*{Request,Response}.php"
+        autowire: true
+        autoconfigure: true
+        public: true
+    Kamalo\KanbanTaskManagementSystem\Infrastructure\Repository\:
+        resource: "../src/Infrastructure/Repository/*.php"
+        autowire: true
+        autoconfigure: true
+        public: true
+    Kamalo\KanbanTaskManagementSystem\Infrastructure\Http\EventListener\ValidateJsonListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.controller }
+    Kamalo\KanbanTaskManagementSystem\Domain\Repository\UserRepositoryInterface: '@Kamalo\KanbanTaskManagementSystem\Infrastructure\Repository\DoctrineUserRepository'
+    Kamalo\KanbanTaskManagementSystem\Domain\Repository\TaskRepositoryInterface: '@Kamalo\KanbanTaskManagementSystem\Infrastructure\Repository\DoctrineTaskRepository'
+    Kamalo\KanbanTaskManagementSystem\Domain\Repository\ProjectRepositoryInterface: '@Kamalo\KanbanTaskManagementSystem\Infrastructure\Repository\DoctrineProjectRepository'
+    Kamalo\\KanbanTaskManagementSystem\Domain\\Repository\SearchRepositoryInterface: '@Kamalo\KanbanTaskManagementSystem\Infrastructure\Repository\ElasticSearchRepository'
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    Kamalo\KanbanTaskManagementSystem\Application\Service\RateLimiter\RateLimiterInterface:
+        alias: Kamalo\KanbanTaskManagementSystem\Infrastructure\Service\RateLimiter\SymfonyRateLimiterAdapter
+
+    Kamalo\KanbanTaskManagementSystem\Infrastructure\Service\RateLimiter\SymfonyRateLimiterAdapter:
+        arguments:
+            $loginLimiter: '@limiter.login'
+    limiter.storage.login:
+        class: Symfony\Component\RateLimiter\Storage\CacheStorage
+        arguments:
+            - '@cache.app'
+    Kamalo\KanbanTaskManagementSystem\Infrastructure\Http\EventListener\ExceptionListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }

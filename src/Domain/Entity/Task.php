@@ -9,9 +9,9 @@ use Kamalo\KanbanTaskManagementSystem\Domain\ValueObject\Description;
 use Kamalo\KanbanTaskManagementSystem\Domain\ValueObject\TaskPriority;
 use Kamalo\KanbanTaskManagementSystem\Domain\ValueObject\Title;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
+#[ORM\HasLifecycleCallbacks]
 #[ORM\Table(name: 'tasks')]
 class Task
 {
@@ -57,25 +57,24 @@ class Task
     private ?DateTimeImmutable $completedAt = null;
 
     public function __construct(
-        Title $title,
-        User $owner,
         ?int $id,
+        Title $title,
+        Project $project,
         ?Description $description,
+        User $owner,
         ?User $assignee,
         ?DateTimeImmutable $dueDate
     ) {
         $this->id = $id;
-
-        if ($this->id === null) {
-            $this->assertDueDate($dueDate);
-        }
-
         $this->title = $title;
+        $this->project = $project;
         $this->description = $description;
         $this->owner = $owner;
         $this->assignee = $assignee;
+        $this->updateDueDate($dueDate);
     }
 
+    // TODO:: Вместо update change
     /**
      * Получить ID задачи.
      * 
@@ -137,7 +136,7 @@ class Task
         return $this->owner;
     }
 
-    public function getAssignee(): User
+    public function getAssignee(): ?User
     {
         return $this->assignee;
     }
@@ -175,18 +174,18 @@ class Task
         return $this->status;
     }
 
-    public function updateStatus(string $status): self
+    public function setStatus(string $status): self
     {
         $this->status = $status;
         return $this;
     }
 
-    public function getDueDate(): DateTimeImmutable
+    public function getDueDate(): ?DateTimeImmutable
     {
         return $this->dueDate;
     }
 
-    public function updateDueDate(DateTimeImmutable $dueDate): self
+    public function updateDueDate(?DateTimeImmutable $dueDate): self
     {
         $this->dueDate = $dueDate;
         return $this;
@@ -197,48 +196,40 @@ class Task
         return $this->createdAt;
     }
 
-    public function markAsCreated(): self
-    {
-        // TODO:: Выбросить исключение если createdAt !== null
-        $this->createdAt = new DateTimeImmutable(
-            'now',
-            new \DateTimeZone('UTC')
-        );
-        return $this;
-    }
-
-    public function getUpdatedAt(): DateTimeImmutable
+    public function getUpdatedAt(): ?DateTimeImmutable
     {
         return $this->updatedAt;
     }
 
-    public function markAsUpdated(): self
-    {
-        // TODO:: Выбросить исключение если updatedAt !== null
-        $this->updatedAt = new DateTimeImmutable(
-            'now',
-            new \DateTimeZone('UTC')
-        );
-        return $this;
-    }
-
-    public function getCompletedAt(): DateTimeImmutable
+    public function getCompletedAt(): ?DateTimeImmutable
     {
         return $this->completedAt;
     }
 
-    public function markAsCompleted(): self
+    #[ORM\PrePersist]
+    public function prePersist(): void
     {
-        // TODO:: Выбросить исключение если completedAt !== null
-        $this->completedAt = new DateTimeImmutable(
+        $this->createdAt = new DateTimeImmutable(
             'now',
             new \DateTimeZone('UTC')
         );
-        return $this;
+
+        $this->status = "open";
     }
 
-    private function assertDueDate(DateTimeImmutable $dueDate): void
+    #[ORM\PreUpdate]
+    public function preUpdate(): void
     {
-        // TODO:: проверить чтобы dueDate была в будущем
+        $this->updatedAt = new DateTimeImmutable(
+            'now',
+            new \DateTimeZone('UTC')
+        );
+
+        if ($this->status == "done") {
+            $this->completedAt = new DateTimeImmutable(
+                'now',
+                new \DateTimeZone('UTC')
+            );
+        }
     }
 }

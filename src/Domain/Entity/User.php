@@ -16,6 +16,7 @@ use Symfony\Component\Serializer\Annotation\Ignore;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
+#[ORM\HasLifecycleCallbacks]
 #[ORM\Table(name: 'users')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -47,18 +48,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'datetime_immutable')]
     private DateTimeImmutable $createdAt;
 
+    #[ORM\Column(type: 'string', length: 64, options: ['default' => 'UTC'])]
+    private string $timezone = 'UTC';
+
     #[ORM\Column(type: 'boolean')]
     private bool $isActive;
 
     /**
      * @var Collection<int, Project>
      */
-    #[ORM\ManyToMany(targetEntity: Project::class, inversedBy: 'participants')]
+    #[ORM\ManyToMany(targetEntity: Project::class, inversedBy: 'members')]
     private Collection $projects;
 
-    public function __construct()
-    {
+    public function __construct(
+        ?int $id,
+        string $email,
+        FullName $name,
+        array $roles,
+        bool $isActive
+    ) {
+        if ($id !== null) {
+            $this->id = $id;
+        }
+        $this->email = $email;
+        $this->name = $name;
+        $this->updateRoles($roles);
         $this->projects = new ArrayCollection();
+        $this->isActive = $isActive;
     }
 
     /**
@@ -151,7 +167,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     // public function getProjects(): Collection{
     //     return $this->projects;
     // }
-    
+
     /**
      * Получить роли пользователей
      * 
@@ -186,15 +202,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->createdAt;
     }
 
-    public function markAsCreated(): self
-    {
-        // TODO:: Выбросить исключение если createdAt !== null
-        $this->createdAt = new DateTimeImmutable(
-            'now',
-            new \DateTimeZone('UTC')
-        );
+
+    public function getTimezone(): string{
+        return $this->timezone;
+    }
+
+    public function updateTimezone(string $timezone): self{
+        // TODO check correct timezone -> maybe VO
+        $this->timezone = $timezone;
         return $this;
     }
+    // public function markAsCreated(): self
+    // {
+    //     // TODO:: Выбросить исключение если createdAt !== null
+    //     $this->createdAt = new DateTimeImmutable(
+    //         'now',
+    //         new \DateTimeZone('UTC')
+    //     );
+    //     return $this;
+    // }
 
     public function getIsActive(): bool
     {
@@ -241,5 +267,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->projects->removeElement($project);
 
         return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function prePersist(): void
+    {
+        $this->createdAt = new DateTimeImmutable(
+            'now',
+            new \DateTimeZone('UTC')
+        );
+
+        $this->isActive = true;
     }
 }

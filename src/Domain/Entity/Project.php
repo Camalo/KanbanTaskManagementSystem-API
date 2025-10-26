@@ -13,6 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
+#[ORM\HasLifecycleCallbacks]
 #[ORM\Table(name: 'projects')]
 class Project
 {
@@ -25,24 +26,34 @@ class Project
     private Title $title;
 
     #[ORM\Embedded(class: Description::class, columnPrefix: false)]
-    private Description $description;
+    private ?Description $description;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private User $owner;
 
-    #[ORM\Column(type: 'boolean')]
-    private bool $isActive;
-
     /**
      * @var Collection<int, User>
      */
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'projects')]
-    private Collection $participants;
+    private Collection $members;
 
-    public function __construct()
-    {
-        $this->participants = new ArrayCollection();
+    #[ORM\Column(type: 'boolean')]
+    private bool $isActive;
+
+    public function __construct(
+        ?int $id,
+        Title $title,
+        ?Description $description,
+        User $owner
+        // bool $isActive
+    ) {
+        $this->id = $id;
+        $this->title = $title;
+        $this->description = $description;
+        $this->owner = $owner;
+        // $this->isActive = $isActive;
+        $this->members = new ArrayCollection();
     }
 
     /**
@@ -120,27 +131,39 @@ class Project
     /**
      * @return Collection<int, User>
      */
-    public function getParticipants(): Collection
+    public function getMembers(): Collection
     {
-        return $this->participants;
+        return $this->members;
     }
 
-    public function addParticipant(User $participant): static
+    public function addMember(User $member): static
     {
-        if (!$this->participants->contains($participant)) {
-            $this->participants->add($participant);
-            $participant->addProject($this);
+        if (!$this->members->contains($member)) {
+            $this->members->add($member);
+            $member->addProject($this);
         }
 
         return $this;
     }
 
-    public function removeParticipant(User $participant): static
+    public function removeMember(User $member): static
     {
-        if ($this->participants->removeElement($participant)) {
-            $participant->removeProject($this);
+        if ($this->members->removeElement($member)) {
+            $member->removeProject($this);
         }
 
         return $this;
+    }
+
+    public function hasMember(User $user): bool
+    {
+        return $this->members->contains($user);
+    }
+
+    #[ORM\PrePersist]
+    public function prePersist(): void
+    {
+        $this->isActive = true;
+       
     }
 }

@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Description
 {
     #[ORM\Column(type: 'text', name: 'description', nullable: true)]
-    private string $value;
+    private ?string $value = null;
 
     public function __construct(string $value)
     {
@@ -20,7 +20,7 @@ class Description
         $this->value = $value;
     }
 
-    public function getValue(): string
+    public function getValue(): ?string
     {
         return $this->value;
     }

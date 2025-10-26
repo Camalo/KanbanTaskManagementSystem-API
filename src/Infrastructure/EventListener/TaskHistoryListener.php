@@ -5,41 +5,161 @@ declare(strict_types=1);
 namespace Kamalo\KanbanTaskManagementSystem\Infrastructure\EventListener;
 
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
+use Doctrine\ORM\Event\PostPersistEventArgs;
+use Doctrine\ORM\Event\PostUpdateEventArgs;
 use Doctrine\ORM\Events;
-use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Kamalo\KanbanTaskManagementSystem\Domain\Entity\Task;
-use Symfony\Component\Security\Core\Security;
+use Kamalo\KanbanTaskManagementSystem\Domain\Entity\TaskHistory;
+use Kamalo\KanbanTaskManagementSystem\Domain\Repository\TaskHistoryRepositoryInterface;
+use Kamalo\KanbanTaskManagementSystem\Domain\ValueObject\TaskPriority;
+use Symfony\Bundle\SecurityBundle\Security;
 
-#[AsDoctrineListener(event: Events::preUpdate)]
+#[AsDoctrineListener(event: Events::postPersist, priority: 0)]
+#[AsDoctrineListener(event: Events::postUpdate, priority: 0)]
 class TaskHistoryListener
 {
-    // TODO:: Реализовать логирование истории изменения задач
-    // public function __construct(
-    //     private readonly Security $security // чтобы знать, кто сделал изменение
-    // ) {}
+    private const CREATE_FIELDS_ACTIONS = [
+        'assignee' => 'assign',
+        'dueDate'  => 'change_due_date',
+        'priority' => 'change_priority',
+    ];
 
-    // public function preUpdate(PreUpdateEventArgs $args): void
-    // {
-    //     $entity = $args->getObject();
+    private const ACTION_MAP = [
+        'assignee'    => 'assign',
+        'dueDate'     => 'change_due_date',
+        'priority'    => 'change_priority',
+        'status'      => 'change_status',
+        'title'       => 'update',
+        'description' => 'update',
+    ];
 
-    //     // интересует только Task
-    //     if (!$entity instanceof Task) {
-    //         return;
-    //     }
+    public function __construct(
+        private Security $security,
+        private TaskHistoryRepositoryInterface $historyRepository
+    ) {}
+    
+    public function postPersist(PostPersistEventArgs $args): void
+    {
+        $task = $args->getObject();
 
-    //     $em = $args->getObjectManager();
-    //     $changes = $args->getEntityChangeSet();
+        if (!$task instanceof Task) {
+            return;
+        }
 
-    //     foreach ($changes as $field => [$oldValue, $newValue]) {
-    //         $history = new TaskHistory();
-    //         $history->setTask($entity);
-    //         $history->setChangedBy($this->security->getUser());
-    //         $history->setFieldName($field);
-    //         $history->setOldValue(is_object($oldValue) ? (string)$oldValue : (string)$oldValue);
-    //         $history->setNewValue(is_object($newValue) ? (string)$newValue : (string)$newValue);
-    //         $history->setChangedAt(new \DateTimeImmutable());
+        $user = $this->security->getUser();
 
-    //         $em->persist($history);
-    //     }
-    // }
+        $this->historyRepository->save(
+            new TaskHistory(
+                task: $task,
+                action: 'create',
+                performedBy: $user,
+                changes: []
+            )
+        );
+
+        foreach (self::CREATE_FIELDS_ACTIONS as $field => $action) {
+
+            $value = $this->normalizeField($field, $task->{'get' . ucfirst($field)}());
+
+            if ($value === null) continue;
+
+            $this->historyRepository->save(
+                new TaskHistory(
+                    task: $task,
+                    action: $action,
+                    performedBy: $user,
+                    changes: [
+                        'old' => null,
+                        'new' => $value
+                    ]
+                )
+            );
+        }
+    }
+
+    /**
+     * Создание записи истории при обновлении задачи
+     */
+    public function postUpdate(PostUpdateEventArgs $args): void
+    {
+        $task = $args->getObject();
+
+        if (!$task instanceof Task) {
+            return;
+        }
+
+        $user = $this->security->getUser();
+
+        $unitOfWork = $args->getObjectManager()->getUnitOfWork();
+        $changes = $unitOfWork->getEntityChangeSet($task);
+
+        $updateChanges = [];
+
+        foreach ($changes as $field => [$old, $new]) {
+
+            if (in_array($field, ['title', 'description'])) {
+                $updateChanges[$field] = $this->normalizeChange($field, $old, $new);
+                continue;
+            }
+
+            $normalized = $this->normalizeChange($field, $old, $new);
+
+            $this->historyRepository->save(
+                new TaskHistory(
+                    task: $task,
+                    action: self::ACTION_MAP[$field],
+                    performedBy: $user,
+                    changes: [$field => $normalized]
+                )
+            );
+        }
+        if (!empty($updateChanges)) {
+            $this->historyRepository->save(
+                new TaskHistory(
+                    task: $task,
+                    action: 'update',
+                    performedBy: $user,
+                    changes: $updateChanges
+                )
+            );
+        }
+    }
+
+    private function normalizeChange(string $field, $old, $new): array
+    {
+        return match ($field) {
+            'assignee' => [
+                'old' => $this->normalizeField($field, $old),
+                'new' => $this->normalizeField($field, $new)
+            ],
+            'dueDate' => [
+                'old' => $this->normalizeField($field, $old),
+                'new' => $this->normalizeField($field, $new)
+            ],
+            'priority' => [
+                'old' => $this->normalizeField($field, $old),
+                'new' => $this->normalizeField($field, $new)
+            ],
+            default => ['old' => $old, 'new' => $new],
+        };
+    }
+
+    private function normalizeField(string $field, $value): mixed
+    {
+        return match ($field) {
+            'assignee' => $value?->getName()->getFullName(),
+            'dueDate'  => $value?->setTimezone(new \DateTimeZone('UTC'))->format('Y-m-d H:i:s'),
+            'priority' => $this->getPriorityLabelSafe($value),
+            default    => $value,
+        };
+    }
+
+    private function getPriorityLabelSafe(int $priorityValue): string
+    {
+        try {
+            return new TaskPriority($priorityValue)->getLabel();
+        } catch (\Throwable $e) {
+            return 'unknown';
+        }
+    }
 }

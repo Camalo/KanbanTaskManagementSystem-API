@@ -20,6 +20,12 @@ class TaskPriority
         3 => "high"
     ];
 
+    const array VALUES = [
+        "low" => 1,
+        "normal" => 2,
+        "high" => 3
+    ];
+
     const array LABELS = [
         1 => "Низкий",
         2 => "Нормальный",
@@ -28,10 +34,17 @@ class TaskPriority
 
     private int $value;
 
-    public function __construct(int $value)
+    public function __construct(string|int $value)
     {
-        $this->assert($value);
+        if (!is_int($value)) {
+            if (isset(self::VALUES[$value])) {
+                $value = self::VALUES[$value];
+            } else {
+                throw new InvalidArgumentException("Некорретное значение приоритета задачи");
+            }
+        }
 
+        $this->assert($value);
         $this->value = $value;
     }
 

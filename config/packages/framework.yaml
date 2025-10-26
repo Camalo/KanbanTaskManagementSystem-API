@@ -7,7 +7,8 @@ framework:
 
     #esi: true
     #fragments: true
-
+    rate_limiter:
+        enabled: true
 when@test:
     framework:
         test: true
