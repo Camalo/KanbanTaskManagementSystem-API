@@ -1,0 +1,80 @@
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: /docker/nginx/Dockerfile
+    image: ktms-api/nginx
+    container_name: ktms-api-webserver
+    ports:
+      - "80:80"
+    volumes:
+      - .:/data:delegated
+      - ./docker/nginx/hosts/app.local.conf:/etc/nginx/conf.d/app.local.conf:ro
+      - ./var/log/nginx:/var/log/nginx
+    networks:
+      - ktms-network
+    restart: always
+
+  app:
+    build:
+      context: .
+      dockerfile: /docker/php/Dockerfile
+    image: ktms-api/php
+    container_name: ktms-api-app
+    volumes:
+      - .:/data:delegated
+      - ~/.composer:/home/www-data/.composer:cached
+    env_file:
+      - .env
+    depends_on:
+      - database
+      - elasticsearch
+    working_dir: /data
+    networks:
+      - ktms-network
+    tty: true
+
+  
+  database:
+    image: postgres:${POSTGRES_VERSION:-16}-alpine
+    container_name: ktms-api-database
+    env_file:
+      - .env
+    ports:
+      - "5432"
+    volumes:
+      - database_data:/var/lib/postgresql/data:rw
+    networks:
+      - ktms-network
+
+  elasticsearch:
+    image: elasticsearch:9.1.2
+    environment:
+      - discovery.type=single-node
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+    ports:
+      - "9200:9200"
+    volumes:
+      - elastic_data:/usr/share/elasticsearch/data
+    networks:
+      - ktms-network
+
+  redis:
+    image: redis:alpine
+    container_name: ktms-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - ktms-network
+
+volumes:
+  elastic_data:
+  database_data:
+  redis_data:
+  database_test_data:
+
+networks:
+  ktms-network:
+    driver: bridge
