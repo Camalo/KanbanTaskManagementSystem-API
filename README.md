@@ -165,3 +165,9 @@ docker compose exec app php bin/console lexik:jwt:generate-keypair
 ``` bash
 curl -u elastic:${ELASTIC_PASSWORD} -XPUT "http://localhost:9200/tasks" -H 'Content-Type: application/json' -d '{ "settings": { ... }, "mappings": { ... } }'
 ```
+
+## Запуск тестов
+
+```
+docker exec -it ktms-api-app vendor/bin/phpunit
+```
