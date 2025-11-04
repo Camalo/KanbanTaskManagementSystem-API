@@ -30,14 +30,22 @@ class TaskHistoryListener
         'priority'    => 'change_priority',
         'status'      => 'change_status',
         'title'       => 'update',
+        'title.value' => 'update',
         'description' => 'update',
+        'description.value' => 'update'
+    ];
+
+    private const IGNORED = [
+        'updatedAt',
+        'createdAt',
+        'completedAt'
     ];
 
     public function __construct(
         private Security $security,
         private TaskHistoryRepositoryInterface $historyRepository
     ) {}
-    
+
     public function postPersist(PostPersistEventArgs $args): void
     {
         $task = $args->getObject();
@@ -97,6 +105,9 @@ class TaskHistoryListener
 
         foreach ($changes as $field => [$old, $new]) {
 
+            if (in_array($field, self::IGNORED)) {
+                continue;
+            }
             if (in_array($field, ['title', 'description'])) {
                 $updateChanges[$field] = $this->normalizeChange($field, $old, $new);
                 continue;
