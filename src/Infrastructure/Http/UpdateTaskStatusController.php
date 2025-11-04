@@ -43,7 +43,7 @@ class UpdateTaskStatusController extends AbstractController
         ($this->useCase)($useCaseRequest);
 
         return new JsonResponse(
-            'Статус задачи обновлен',
+            data: ['message' => 'Статус задачи обновлен'],
             status: Response::HTTP_OK
         );
     }

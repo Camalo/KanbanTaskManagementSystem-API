@@ -12,7 +12,7 @@ class GetTaskDetailResponse
         public readonly string $title,
         public readonly ?string $description,
         public readonly int $owner,
-        public readonly int $assignee,
+        public readonly ?int $assignee,
         public readonly string $priority,
         public readonly string $status,
         public readonly ?string $dueDate,

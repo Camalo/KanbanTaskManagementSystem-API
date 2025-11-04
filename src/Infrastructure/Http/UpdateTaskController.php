@@ -50,9 +50,8 @@ class UpdateTaskController extends AbstractController
             )
         );
 
-        // TODO:: Правильные ли коды статусов возвращаются
         return new JsonResponse(
-            data: ['success' => 'Задача обновлена'],
+            data: ['message' => 'Задача обновлена'],
             status: Response::HTTP_CREATED
         );
     }

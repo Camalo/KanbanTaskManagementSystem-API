@@ -74,7 +74,6 @@ class Task
         $this->updateDueDate($dueDate);
     }
 
-    // TODO:: Вместо update change
     /**
      * Получить ID задачи.
      * 

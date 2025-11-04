@@ -21,10 +21,10 @@ class TaskHistory
     private Task $task;
 
     #[ORM\Column(type: 'string', length: 32)]
-    private string $action; // create, assign, update, change_status, change_priority, change_due_date
+    private string $action;
 
     #[ORM\Column(type: 'json', nullable: true)]
-    private ?array $changes = null; // старые и новые значения при action=update, change_status и т.д.
+    private ?array $changes = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
@@ -51,7 +51,7 @@ class TaskHistory
         $this->task = $task;
 
         if(!in_array($action, self::ACTIONS)){
-            throw new \InvalidArgumentException("Неверное указанное действие: $action");
+            throw new \InvalidArgumentException("Неверно указанное действие: $action");
         }
 
         $this->action = $action;

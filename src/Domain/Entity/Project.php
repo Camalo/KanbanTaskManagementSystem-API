@@ -20,7 +20,7 @@ class Project
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: "IDENTITY")]
     #[ORM\Column(type: 'integer')]
-    private ?int $id;
+    private ?int $id = null;
 
     #[ORM\Embedded(class: Title::class, columnPrefix: false)]
     private Title $title;
@@ -46,13 +46,11 @@ class Project
         Title $title,
         ?Description $description,
         User $owner
-        // bool $isActive
     ) {
         $this->id = $id;
         $this->title = $title;
         $this->description = $description;
         $this->owner = $owner;
-        // $this->isActive = $isActive;
         $this->members = new ArrayCollection();
     }
 

@@ -28,7 +28,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: "IDENTITY")]
     #[ORM\Column(type: 'integer')]
-    private ?int $id;
+    private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     #[Assert\NotBlank]
@@ -164,10 +164,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->name;
     }
 
-    // public function getProjects(): Collection{
-    //     return $this->projects;
-    // }
-
     /**
      * Получить роли пользователей
      * 
@@ -212,16 +208,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->timezone = $timezone;
         return $this;
     }
-    // public function markAsCreated(): self
-    // {
-    //     // TODO:: Выбросить исключение если createdAt !== null
-    //     $this->createdAt = new DateTimeImmutable(
-    //         'now',
-    //         new \DateTimeZone('UTC')
-    //     );
-    //     return $this;
-    // }
-
+    
     public function getIsActive(): bool
     {
         return $this->isActive;
