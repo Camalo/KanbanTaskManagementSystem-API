@@ -29,7 +29,7 @@ class CreateTaskController extends AbstractController
     {
         $data = $request->attributes->get('json_data');
 
-        ($this->useCase)(
+        $response = ($this->useCase)(
             new CreateTaskRequest(
                 title: $data['title'],
                 projectId: $projectId,
@@ -41,7 +41,7 @@ class CreateTaskController extends AbstractController
         );
 
         return new JsonResponse(
-            data: ['success' => 'Задача создана'],
+            data: ['message' => 'Задача с id ' . $response->id . ' успешно создана'],
             status: Response::HTTP_CREATED
         );
     }

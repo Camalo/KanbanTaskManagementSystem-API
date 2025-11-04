@@ -30,11 +30,10 @@ class CreateTaskUseCase
         private ProjectRepositoryInterface $projectRepository
     ) {}
 
-    public function __invoke(CreateTaskRequest $request): void
+    public function __invoke(CreateTaskRequest $request): CreateTaskResponse
     {
-        // TODO вынести из каждого useCase этот блок кода
         $owner = $this->security->getUser();
-        // Что касается Project
+
         $project = $this->projectRepository->findById($request->projectId);
 
         if (!$project) {
@@ -91,5 +90,10 @@ class CreateTaskUseCase
         }
 
         $this->taskRepository->save($task);
+
+        return new CreateTaskResponse(
+            $task->getId(),
+            'Задача с id ' . $task->getId() . ' успешно создана'
+        );
     }
 }
