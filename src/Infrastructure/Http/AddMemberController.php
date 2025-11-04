@@ -29,7 +29,7 @@ class AddMemberController extends AbstractController
     {
         $data = $request->attributes->get('json_data');
 
-        ($this->useCase)(
+        $response = ($this->useCase)(
             new AddMemberRequest(
                 projectId: $projectId,
                 userId: intval($data['user'])
@@ -37,7 +37,7 @@ class AddMemberController extends AbstractController
         );
 
         return new JsonResponse(
-            data: ['success' => 'Участник добавлен в проект'],
+            data: ['message' => 'Участник ' . $response->memberName . ' добавлен в проект с id ' . $response->projectId],
             status: Response::HTTP_CREATED
         );
     }

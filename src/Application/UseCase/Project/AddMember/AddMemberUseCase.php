@@ -22,7 +22,7 @@ class AddMemberUseCase
         private UserRepositoryInterface $userRepository
     ) {}
 
-    public function __invoke(AddMemberRequest $request): void
+    public function __invoke(AddMemberRequest $request): AddMemberResponse
     {
         $user = $this->security->getUser();
         $project = $this->projectRepository->findById($request->projectId);
@@ -30,7 +30,7 @@ class AddMemberUseCase
         if (!$project) {
             throw new ProjectNotFoundException($request->projectId);
         }
-        
+
         if (!$this->auth->isGranted('PROJECT_MANAGE', $project)) {
             throw new AccessDeniedException();
         }
@@ -51,5 +51,10 @@ class AddMemberUseCase
         $this->projectRepository->save($project);
 
         $this->userRepository->save($user);
+
+        return new AddMemberResponse(
+            $project->getId(),
+            $member->getName()->getFullName()
+        );
     }
 }
