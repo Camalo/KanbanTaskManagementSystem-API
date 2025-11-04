@@ -28,7 +28,7 @@ class CreateProjectController extends AbstractController
     {
         $data = $request->attributes->get('json_data');
 
-        ($this->useCase)(
+        $response = ($this->useCase)(
             new CreateProjectRequest(
                 title: $data['title'],
                 description: $data['description']
@@ -36,7 +36,7 @@ class CreateProjectController extends AbstractController
         );
 
         return new JsonResponse(
-            data: ['success' => 'Проект создан'],
+            data: ['message' => 'Проект c id ' . $response->id . ' успешно создан'],
             status: Response::HTTP_CREATED
         );
     }

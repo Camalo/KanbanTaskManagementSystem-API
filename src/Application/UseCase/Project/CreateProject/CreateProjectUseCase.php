@@ -20,7 +20,7 @@ class CreateProjectUseCase
         private ProjectRepositoryInterface $projectRepository
     ) {}
 
-    public function __invoke(CreateProjectRequest $request): void
+    public function __invoke(CreateProjectRequest $request): CreateProjectResponse
     {
         // TODO вынести из каждого useCase этот блок кода
         $user = $this->security->getUser();
@@ -42,5 +42,7 @@ class CreateProjectUseCase
         }
 
         $this->projectRepository->save($project);
+
+        return new CreateProjectResponse($project->getId());
     }
 }
