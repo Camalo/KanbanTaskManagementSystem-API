@@ -13,9 +13,8 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class TokenService
 {
-    private const TTL = 604800; // время жизни refresh токена в секундах
+    private const TTL = 604800; 
 
-    // TODO:: Переименовать LoginAttempsRepositoryInterface и LoginAttempsRepository
     public function __construct(
         private TokenRepositoryInterface $tokenRepository,
         private JWTTokenManagerInterface $jwtManager,

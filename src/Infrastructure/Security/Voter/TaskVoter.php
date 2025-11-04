@@ -57,7 +57,6 @@ final class TaskVoter extends Voter
         }
 
         if ($attribute === self::TASK_CREATE) {
-            // TODO:: Пока так
             return $this->canView($user, $project);
         }
 

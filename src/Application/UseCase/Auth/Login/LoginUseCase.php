@@ -31,7 +31,6 @@ class LoginUseCase
         }
 
         if (!$user = $this->userRepository->findByEmail($request->email)) {
-            // $this->loginAttemptsService->registerFailure($request->ip);
             throw new UnknownUserException();
         }
 
@@ -39,13 +38,11 @@ class LoginUseCase
             user: $user,
             plainPassword: $request->password
         )) {
-            // $this->loginAttemptsService->registerFailure($request->ip);
             throw new InvalidCredentialsException();
         }
 
         $this->rateLimiter->reset($request->ip);
 
-        // TODO:: А здесь какой паттерн? То что сейчас хорошо но нарушает зависимость слоев!
         $tokens = $this->tokenService->generateForUser($user);
 
         return new LoginResponse(
