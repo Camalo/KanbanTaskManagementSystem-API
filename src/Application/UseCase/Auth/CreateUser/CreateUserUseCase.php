@@ -17,7 +17,7 @@ class CreateUserUseCase
         private UserRepositoryInterface $repository
     ) {}
 
-    public function __invoke(CreateUserRequest $request): void
+    public function __invoke(CreateUserRequest $request): CreateUserResponse
     {
         if ($this->repository->findByEmail($request->email)) {
             throw new NonUniqueUserException($request->email);
@@ -38,8 +38,13 @@ class CreateUserUseCase
         $user->updateTimezone($request->timezone);
         $hashedPassword = $this->passwordHasher->hashPassword($user, $request->password);
         $user->updatePassword($hashedPassword);
-       
+
 
         $this->repository->save($user);
+
+        return new CreateUserResponse(
+            $user->getId(),
+            'Пользователь с id ' . $user->getId() . ' успешно создан'
+        );
     }
 }

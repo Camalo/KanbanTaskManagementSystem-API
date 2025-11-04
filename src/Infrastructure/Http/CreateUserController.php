@@ -28,7 +28,7 @@ class CreateUserController extends AbstractController
     {
         $data = $request->attributes->get('json_data');
 
-        ($this->useCase)(
+        $response = ($this->useCase)(
             new CreateUserRequest(
                 firstName: $data['firstName'],
                 middleName: $data['middleName'] ?? null,
@@ -40,8 +40,8 @@ class CreateUserController extends AbstractController
         );
 
         return new JsonResponse(
-            'Пользователь создан',
-            Response::HTTP_OK
+            data: ['message' => 'Пользователь с id ' . $response->id . ' успешно создан'],
+            status: Response::HTTP_OK
         );
     }
 }
