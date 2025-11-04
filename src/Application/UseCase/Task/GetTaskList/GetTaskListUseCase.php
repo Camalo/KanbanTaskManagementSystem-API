@@ -38,7 +38,15 @@ class GetTaskListUseCase
             throw new ProjectNotFoundException($request->projectId);
         }
 
-        $tasks = $this->taskRepository->find(['project' => $project]);
+        $filters = ['project' => $project];
+
+        if (!$request->showCanceled) {
+            $filters['status'] = [
+                'operator' => '!=',
+                'value' => 'canceled'
+            ];
+        }
+        $tasks = $this->taskRepository->find($filters);
 
         // TODO А если нет задач
         if (!$this->auth->isGranted('TASK_VIEW', $tasks[0])) {

@@ -25,17 +25,15 @@ class GetTaskListController extends AbstractController
 
     public function __invoke(int $projectId, Request $request): JsonResponse
     {
-        // TODO:: Принимаем параметры фильтра -> см. SearchTaskController
-        // TODO:: Здесь немного другие фильтры, но не пагинация
-        // В любом случае слишком задач не будет вываливаться, будет сортировка и ограничение кол-ва
-            $response = ($this->useCase)(
-                new GetTaskListRequest(
-                    projectId: $projectId,
-                    priority: null,
-                    status: null
-                )
-            );
-        
+        $canceled = $request->query->get('canceled');
+
+        $response = ($this->useCase)(
+            new GetTaskListRequest(
+                projectId: $projectId,
+                showCanceled: ($canceled === '1' || $canceled === 'true')
+            )
+        );
+
         return new JsonResponse(
             $response->items,
             Response::HTTP_OK

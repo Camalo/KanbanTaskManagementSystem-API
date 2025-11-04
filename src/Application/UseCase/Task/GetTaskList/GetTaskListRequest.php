@@ -8,7 +8,6 @@ class GetTaskListRequest
 {
     public function __construct(
         public readonly int $projectId,
-        public readonly ?string $priority,
-        public readonly ?string $status
+        public readonly bool $showCanceled
     ) {}
 }
