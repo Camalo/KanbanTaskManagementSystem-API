@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Kamalo\KanbanTaskManagementSystem\Application\UseCase\Task\UpdateTaskStatus;
 
 use Kamalo\KanbanTaskManagementSystem\Application\Exception\AccessDeniedException;
+use Kamalo\KanbanTaskManagementSystem\Application\Exception\CannotCancelCompletedTaskException;
 use Kamalo\KanbanTaskManagementSystem\Application\Exception\CannotUpdateStatusException;
+use Kamalo\KanbanTaskManagementSystem\Application\Exception\CannotUpdateStatusWithoutAssigneeException;
 use Kamalo\KanbanTaskManagementSystem\Application\Exception\TaskNotFoundException;
 use Kamalo\KanbanTaskManagementSystem\Domain\Repository\TaskRepositoryInterface;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -40,6 +42,14 @@ class UpdateTaskStatusUseCase
             transitionName: $request->transition
         )) {
             throw new CannotUpdateStatusException($task->getStatus(), $request->transition);
+        }
+
+        if($task->getAssignee() === null && $request->transition === 'start'){
+            throw new CannotUpdateStatusWithoutAssigneeException();
+        }
+
+        if($task->getStatus() === 'done' && $request->transition === 'cancel'){
+            throw new CannotCancelCompletedTaskException();
         }
 
         $this->taskWorkflow->apply(
