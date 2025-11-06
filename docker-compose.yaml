@@ -34,7 +34,20 @@ services:
       - ktms-network
     tty: true
 
-  
+  frontend:
+    image: node:20-alpine
+    container_name: ktms-frontend
+    working_dir: /data
+    volumes:
+      - .:/data:delegated
+      - /data/node_modules
+    env_file:
+      - .env
+    networks:
+      - ktms-network
+    tty: true
+    command: sh -lc "npm install && npm run watch"
+
   database:
     image: postgres:${POSTGRES_VERSION:-16}-alpine
     container_name: ktms-api-database
