@@ -1,0 +1,130 @@
+@use '../variables' as vars;
+
+$orange: #FF7C44;
+$halfOrange: #FF7C444d;
+$yellow: #FFBE44;
+$halfYellow: #FFBE444d;
+$lBlue: #44B7FF;
+$halfLBlue: #44b7ff4d;
+
+.card-detail {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 550px;
+    border-radius: vars.$borderRad;
+    padding: 36px 48px;
+    margin: 0 auto;
+
+    &__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    &__project {
+        font-size: 14px;
+        font-weight: 500;
+        color: #11192b80;
+        line-height: 1;
+    }
+
+    &__badge {
+        padding: 6px 12px;
+        border-radius: vars.$borderRad;
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 1;
+        color: vars.$white;
+        background-color: #BABABA;
+        width: fit-content;
+
+        &-major {
+            background-color: $orange;
+        }
+
+        &-ordinary {
+            background-color: $yellow;
+        }
+
+        &-minor {
+            background-color: $lBlue;
+        }
+    }
+
+    &__body {
+        margin-top: 12px;
+    }
+
+    &__title {
+        font-size: 20px;
+        font-weight: 500;
+        color: vars.$textColor;
+        line-height: vars.$lineHeight;
+        margin-bottom: 32px;
+    }
+
+    &__row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 16px;
+
+        &:last-child{
+            margin-top: 32px;
+        }
+    }
+
+    &__column {
+        display: flex;
+        flex-direction: column;
+
+        &:first-child {
+            margin-right: 24px;
+        }
+    }
+
+    &__point {
+        font-size: 14px;
+        font-weight: 400;
+        color: vars.$textColor;
+        line-height: 1;
+        margin-bottom: 6px;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+
+        &-grey {
+            font-weight: 500;
+            color: #11192b80;
+
+        }
+    }
+
+    &__text {
+        font-size: 14px;
+        font-weight: 400;
+        color: vars.$textColor;
+        line-height: vars.$lineHeight;
+        margin-bottom: 32px;
+    }
+
+    &__doc {
+        padding: 12px 24px;
+        border-radius: vars.$borderRad;
+        border: 1px solid #11192b4d;
+        color: #11192b80;
+        font-size: 12px;
+        font-weight: 500;
+        margin-right: 8px;
+    }
+}
+
+.add-icon {
+    width: 28px;
+    height: 28px;
+    margin-right: 8px;
+    background-color: #4485FF;
+    border-radius: 50%;
+    padding: 7px;
+}

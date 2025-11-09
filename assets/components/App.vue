@@ -1,22 +1,13 @@
 <template>
-  <div class="app-root">
-    <h1>{{ message }}</h1>
-    <button @click="count++">Кликнули {{ count }} раз</button>
-  </div>
+  <Header></Header>
+  <Board></Board>
+  <Footer></Footer>
 </template>
 
-<script>
-export default {
-  data() {
-    return { message: 'Привет из Vue!', count: 0 }
-  }
-}
-</script>
+<script setup>
 
-<style lang="scss">
-.app-root {
-  padding: 2rem;
-  h1 { color: #42b983; }
-  button { margin-top: 1rem; padding: .5rem 1rem; border-radius: 6px; }
-}
-</style>
+import Footer from '../layout/Footer.vue';
+import Header from '../layout/Header.vue';
+import Board from '../views/KanbanBoard.vue';
+
+</script>

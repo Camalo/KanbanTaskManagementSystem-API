@@ -1,0 +1,64 @@
+/* RESET */
+
+* {
+    box-sizing: border-box;
+    vertical-align: baseline;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
+
+    &::after,
+    &::before {
+        box-sizing: border-box;
+        vertical-align: baseline;
+    }
+}
+
+ul,
+ol {
+    padding-left: 0;
+    list-style: none;
+}
+
+body,
+blockquote,
+figure {
+    margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ul,
+ol,
+dl {
+    margin-block: 0;
+}
+
+dd {
+    margin-left: 0;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+input,
+textarea,
+select,
+button {
+    font: inherit;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex-grow: 1;
+}

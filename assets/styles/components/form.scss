@@ -1,0 +1,53 @@
+@use '../variables' as vars;
+
+.form {
+    &__row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+
+        &-extended {
+            justify-content: space-between;
+        }
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    &__column {
+        display: flex;
+        flex-direction: column;
+
+        &-full {
+            width: 100%;
+        }
+    }
+
+    &__link {
+        color: #11192B;
+        font-size: 14px;
+
+        &:hover {
+            color: vars.$hoverColor;
+        }
+    }
+
+    &__label {
+        color: #11192B80;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1;
+        margin-bottom: 6px;
+    }
+
+    &__message {
+        color: vars.$red;
+        font-size: 12px;
+        margin-top: 8px;
+        opacity: 0;
+        max-height: 40px;
+        overflow: hidden;
+        transition: all 0.2s ease;
+    }
+}

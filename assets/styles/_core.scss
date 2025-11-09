@@ -1,0 +1,89 @@
+@use 'variables' as vars;
+
+body {
+    min-height: 100vh;
+}
+
+#app {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+main {
+    display: flex;
+    flex-grow: 1;
+}
+
+.container {
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 19px;
+
+    @media screen and (min-width: 768px) {
+        padding: 0 19px;
+    }
+
+    @media screen and (min-width: 992px) {
+        padding: 0 39px;
+    }
+
+    @media screen and (min-width: 1200px) {
+        padding: 0 50px;
+    }
+
+    @media screen and (min-width: 1600px) {
+        padding: 0 62px;
+    }
+
+    &-center {
+        display: flex;
+        align-items: center;
+    }
+}
+
+.form-container {
+    max-width: 600px;
+    width: 100%;
+    padding: 48px;
+    border-radius: vars.$borderRad;
+    background-color: #F6F8FB;
+    margin: 0 auto;
+}
+
+a {
+    text-decoration: none;
+}
+
+.title {
+    font-weight: 600;
+    font-size: 24px;
+    line-height: vars.$lineHeight;
+    color: vars.$textColor;
+    margin-bottom: 20px;
+}
+
+.subtitle {
+    font-weight: 400;
+    font-size: 20px;
+    line-height: vars.$lineHeight;
+    color: vars.$textColor;
+
+    &-meduim {
+        font-weight: 500;
+    }
+}
+
+.task__title {
+    font-weight: 500;
+    font-size: 16px;
+    line-height: vars.$lineHeight;
+    color: #11192B;
+}
+
+.task__text {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: vars.$lineHeight;
+    color: vars.$textColor;
+}

@@ -1,0 +1,18 @@
+@use '../variables' as vars;
+
+.button {
+    font-size: 14px;
+    padding: 12px 32px;
+    border-radius: vars.$borderRad;
+    border: none;
+    background-color: vars.$blue;
+    color: vars.$white;
+    line-height: 1;
+
+    &:hover,
+    &:focus,
+    &-active {
+        background-color: vars.$hoverColor;
+        filter: vars.$dropShadow;
+    }
+}

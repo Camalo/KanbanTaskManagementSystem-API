@@ -1,0 +1,130 @@
+@use '../variables' as vars;
+
+
+$orange: #FF7C44;
+$halfOrange: #FF7C444d;
+$yellow: #FFBE44;
+$halfYellow: #FFBE444d;
+$lBlue: #44B7FF;
+$halfLBlue: #44b7ff4d;
+
+
+.card {
+    border-radius: vars.$borderRad;
+    border: 1px solid #BABABA;
+    margin-bottom: 24px;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+
+    &__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 24px;
+        background-color: #bababa4d;
+    }
+
+    &-major {
+        border-color: $orange;
+
+        .card__header {
+            background-color: $halfOrange;
+        }
+    }
+
+    &-ordinary {
+        border-color: $yellow;
+
+        .card__header {
+            background-color: $halfYellow;
+        }
+    }
+
+    &-minor {
+        border-color: $lBlue;
+
+        .card__header {
+            background-color: $halfLBlue;
+        }
+    }
+
+    &__row {
+        display: flex;
+        align-items: center;
+    }
+
+    &__image {
+        display: block;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+    }
+
+    &__icon {
+        display: block;
+        height: 18px;
+        object-fit: contain;
+    }
+
+    &__label {
+        margin-left: 10px;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1;
+        color: #11192b80;
+    }
+
+    &__body {
+        padding: 12px 24px;
+        margin-top: 12px;
+    }
+
+    &__title {
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 1;
+        color: vars.$textColor;
+        margin-bottom: 16px;
+    }
+
+    &__text {
+        font-size: 14px;
+        font-weight: 400;
+        line-height: vars.$lineHeight;
+        color: vars.$textColor;
+        margin-bottom: 32px;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+
+        &-grey {
+            color: rgba(17, 25, 43, .5);
+        }
+    }
+
+    &__badge {
+        padding: 9px 16px;
+        border-radius: vars.$borderRad;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 1;
+        color: vars.$white;
+        background-color: #BABABA;
+        width: fit-content;
+
+        &-major {
+            background-color: $orange;
+        }
+
+        &-ordinary {
+            background-color: $yellow;
+        }
+
+        &-minor {
+            background-color: $lBlue;
+        }
+    }
+}

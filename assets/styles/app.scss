@@ -1,3 +1,20 @@
-body{
-    background-color: burlywood;
-}
+@use 'mixins';
+@use 'base/reset';
+@use 'base/typography';
+@use 'core';
+@use 'layout/header';
+@use 'layout/footer';
+
+@use 'components/button';
+@use 'components/check';
+@use 'components/form';
+@use 'components/input';
+@use 'components/select';
+@use 'components/card';
+
+@use 'pages/kanbanBoard';
+@use 'pages/cardDetail';
+
+
+
+

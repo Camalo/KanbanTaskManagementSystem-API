@@ -1,12 +1,48 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8"/>
-    {{ encore_entry_link_tags('app') }}
-  </head>
-  <body>
-    <div id="app"></div>
+	<head>
+		<meta charset="utf-8"/>
+		{{ encore_entry_link_tags('app') }}
+	</head>
+	<body>
 
-    {{ encore_entry_script_tags('app') }}
-  </body>
+		<div id="app"></div>
+
+		{# <main>
+					<div class="title">Selevium разработка</div>
+					<div class="subtitle">Новый проект</div>
+					<div class="task__title">Новая задача</div>
+					<div class="task__text">Как принято считать, интерактивные прототипы набирают популярность среди определенных
+														            слоев населения...</div>
+					<form class="form" action="" method="post">
+						<div class="form__column">
+							<input class="input" id="input01" type="text" placeholder="Имя">
+							<label class="form__message" for="input01">Обязательное поле для заполнения</label>
+						</div>
+						<div class="form__row">
+							<label class="check">
+								<input type="checkbox" name="check01" id="check01">
+								<span class="check__box"></span>
+								<span class="check__label">Запомнить меня</span>
+							</label>
+						</div>
+						<div class="form__row">
+							<div class="form__link">Забыли пароль?</div>
+						</div>
+					</div>
+					<div class="form__row">
+						<input class="button" type="submit" value="Войти">
+					</div>
+				</form>
+		
+				<form class="form form-inline" action="" method="get">
+					<div class="form__row">
+						<input class="input form__input" type="text" name="" id="">
+						<input class="button form__button" type="submit" value="Найти">
+					</div>
+				</form>
+		
+		
+				<button class="button">Создать задачу</button> #}
+		{{ encore_entry_script_tags('app') }}</body>
 </html>

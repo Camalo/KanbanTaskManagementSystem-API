@@ -1,0 +1,37 @@
+@use '../variables' as vars;
+
+
+.board {
+
+    &__header {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    &__body {
+        display: flex;
+        background-color: #F6F8FB;
+        margin-top: 24px;
+    }
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+
+    &__header {
+        padding: 13px 16px;
+        font-size: 20px;
+        font-weight: 500;
+        line-height: vars.$lineHeight;
+        color: vars.$textColor;
+        background-color: vars.$white;
+    }
+
+    &__body {
+        height: 100%;
+        padding: 16px;
+    }
+}
+

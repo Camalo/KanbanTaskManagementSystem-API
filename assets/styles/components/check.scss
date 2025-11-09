@@ -1,0 +1,43 @@
+@use '../variables' as vars;
+
+.check {
+    position: relative;
+    display: flex;
+    align-items: center;
+    user-select: none;
+    cursor: pointer;
+
+    input[type="checkbox"] {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    &__box {
+        width: 16px;
+        height: 16px;
+        border-radius: 4px;
+        border: 1px solid vars.$grey;
+        background-color: vars.$white;
+        margin-right: 8px;
+        outline: 0 solid #11192B1E;
+        transition: all 0.2s ease;
+
+        .check:hover &,
+        input:focus-visible+& {
+            border: 1px solid vars.$halfBlue;
+            outline: 1px solid vars.$halfBlue;
+        }
+
+        input:checked+& {
+            background-color: vars.$blue;
+            border: 1px solid vars.$blue;
+        }
+    }
+
+    &__label {
+        font-size: 14px;
+        color: vars.$grey;
+        line-height: 1;
+    }
+}

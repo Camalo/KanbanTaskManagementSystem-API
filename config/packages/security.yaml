@@ -39,6 +39,7 @@ security:
         # открытые роуты
         - { path: ^/api/auth/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/auth/register, roles: PUBLIC_ACCESS }
+        - { path: ^/api/projects/13/tasks, roles: PUBLIC_ACCESS }
         # всё остальное в API требует авторизации
         - { path: ^/api, roles: ROLE_USER }
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kamalo\KanbanTaskManagementSystem\Application\UseCase\Task\GetTaskList;
 
+use DateTimeZone;
 use Kamalo\KanbanTaskManagementSystem\Application\Exception\AccessDeniedException;
 use Kamalo\KanbanTaskManagementSystem\Application\Exception\ProjectNotFoundException;
 use Kamalo\KanbanTaskManagementSystem\Application\Exception\UnknownUserException;
@@ -17,7 +18,7 @@ class GetTaskListUseCase
 {
     public function __construct(
         private Security $security,
-        private AuthorizationCheckerInterface $auth,
+        // private AuthorizationCheckerInterface $auth,
         private TaskRepositoryInterface $taskRepository,
         private ProjectRepositoryInterface $projectRepository
     ) {}
@@ -25,12 +26,13 @@ class GetTaskListUseCase
     public function __invoke(GetTaskListRequest $request): GetTaskListResponse
     {
         // TODO 
-        $user = $this->security->getUser();
+        // $user = $this->security->getUser();
 
-        if (!$user instanceof \Kamalo\KanbanTaskManagementSystem\Domain\Entity\User) {
-            throw new UnknownUserException();
-        }
-        $timezone = new \DateTimeZone($user->getTimezone());
+        // if (!$user instanceof \Kamalo\KanbanTaskManagementSystem\Domain\Entity\User) {
+        //     throw new UnknownUserException();
+        // }
+        // $timezone = new \DateTimeZone($user->getTimezone());
+        $timezone = new DateTimeZone("Europe/Moscow");
 
         $project = $this->projectRepository->findById($request->projectId);
 
@@ -49,9 +51,9 @@ class GetTaskListUseCase
         $tasks = $this->taskRepository->find($filters);
 
         // TODO А если нет задач
-        if (!$this->auth->isGranted('TASK_VIEW', $tasks[0])) {
-            throw new AccessDeniedException();
-        }
+        // if (!$this->auth->isGranted('TASK_VIEW', $tasks[0])) {
+        //     throw new AccessDeniedException();
+        // }
 
         $responseArray = [];
 

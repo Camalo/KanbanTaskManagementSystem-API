@@ -1,0 +1,34 @@
+@use '../variables' as vars;
+
+.input {
+    width: 100%;
+    min-width: 100%;
+    font-size: 14px;
+    padding: 10px 12px;
+    border-radius: vars.$borderRad;
+    border: 1px solid #11192B1E;
+    outline: 0 solid #11192B1E;
+    transition: all 0.2s ease;
+
+    &::placeholder {
+        color: #11192B1E;
+    }
+
+    &:hover,
+    &:focus,
+    &:focus-visible,
+    &:focus-within,
+    &-active {
+        border: 1px solid vars.$halfBlue;
+        outline: 1px solid vars.$halfBlue;
+    }
+
+    &-error {
+        border: 1px solid;
+
+        +.form__message {
+            opacity: 1;
+            max-height: 40px;
+        }
+    }
+}
